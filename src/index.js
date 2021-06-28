@@ -1,37 +1,112 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './style.css';
-/*
-function Square(props){
-  return(
-    <button className="square" onClick={props.onClick}>
-      {props.value}
-    </button>
-  )
-}*/
 
-class Base extends React.Component{
-  //send(){
-    
-  //}onClick={}
+export class Base extends React.Component{
+  constructor(props){
+    super(props);
+    this.state = {
+      Operator:'+',
+      PreviousButton:'',
+      Total:0,
+      InputNumber:0,
+      CalculatorDisplay:0,
+    };
+  }
+
+  handleClick(i){
+    let operator = this.state.Operator;
+    let previousButton = this.state.PreviousButton;
+    let total = this.state.Total;
+    let inputNumber = this.state.InputNumber;
+    let calculatorButtonValue = i;
+
+    //console.log("input:"+i);
+    //console.log(previousButton);
+    console.log(this.state.Operator);
+    //クリア
+    if (calculatorButtonValue === 'C'){
+      this.setState({
+        Operator:'+',
+        Total:0,
+        InputNumber:0,
+        CalculatorDisplay:0,
+      });
+      //console.log("calculatorDisplay:" + this.state.calculatorDisplay);
+    //演算ボタン
+    } else if (calculatorButtonValue === '+' || calculatorButtonValue === '-' || calculatorButtonValue === '×' || calculatorButtonValue === '÷' || calculatorButtonValue === '='){
+      inputNumber = Number(inputNumber);
+      //console.log("total:"+total);
+      //console.log("inputNumber:"+inputNumber);
+      if(previousButton !== '+' && previousButton !== '-' && previousButton !== '×' && previousButton !== '÷'){
+        if (operator === '+'){
+          total = total + inputNumber;
+        } else if (operator === '-'){
+          total = total - inputNumber;
+        } else if (operator === '×'){
+          total = total * inputNumber;
+        } else if (operator === '÷'){
+          total = total / inputNumber;
+        }
+      }
+      this.setState({
+        Operator : calculatorButtonValue,
+        Total : total,
+        InputNumber : 0,
+        CalculatorDisplay : total,
+      });
+      //console.log("calculatorDisplay:" + this.state.calculatorDisplay);
+    } else {
+      //イコールボタン
+      if (operator === '='){
+        this.setState({
+          Total : 0,
+          Operator : '+',
+        })
+      }
+      //console.log(inputNumber + ":" + toString.call(inputNumber));
+      //console.log("calculatorDisplay:" +this.state.calculatorDisplay);
+
+      //数字ボタン
+      //初回処理
+      if (inputNumber === 0){
+        inputNumber = calculatorButtonValue;
+        //console.log(inputNumber);
+      //2回目以降　桁を増やしていく
+      } else {
+        inputNumber = this.state.CalculatorDisplay + calculatorButtonValue
+        //console.log(inputNumber);
+      }
+      this.setState({
+        CalculatorDisplay : inputNumber,
+        InputNumber: inputNumber,
+      });
+     //console.log("calculatorDisplay:" + this.state.CalculatorDisplay);
+    }
+    //console.log(calculatorButtonValue);
+    this.setState({
+      PreviousButton : calculatorButtonValue,
+    });
+  }
 
   renderbutton(i) {
     return (
-      <input type="button" value={i} className='calculator-button'/>
+      <input type="button" value={i} onClick={() => this.handleClick(i)} className='calculator-button'/>
     );
   }
-  /*
+  
   renderdisplay(){
+    console.log("display:"+this.state.CalculatorDisplay);
     return(
-      0
+      this.state.CalculatorDisplay
     );
   }
-  */
+  
   render() {
     return (
       <div className='calculator-division'>
       <div className='calculator-display-division'>
-        0
+        {this.renderdisplay()}
       </div>
       <div className='calculator-button-division'>
         {this.renderbutton('1')}
@@ -55,74 +130,7 @@ class Base extends React.Component{
     );
   }
 }
-/*
-class App extends React.Comment {
-  constructor(props){
-    super(props);
-    this.state = {
-      calculatorDisplay:0,
-    };
-  }
 
-  handleClick(i){
-    let operator;
-    let previousButton;
-    let total;
-    let inputNumber = '0';
-    let calculatorButtonValue = i;
-
-    if (calculatorButtonValue === 'C'){
-      total ='0';
-      operator = '+';
-      inputNumber = '0';
-      this.setState({
-        calculatorDisplay :'0',
-      });
-    } else if (calculatorButtonValue === '+' || calculatorButtonValue === '-' || calculatorButtonValue === '×' || calculatorButtonValue === '÷' || calculatorButtonValue === '='){
-      inputNumber = Number(inputNumber);
-      if(previousButton !== '+' && previousButton !== '-' && previousButton !== '×' && previousButton !== '÷'){
-        if (operator === '+'){
-          total = total + inputNumber;
-        } else if (operator === '-'){
-          total = total - inputNumber;
-        } else if (operator === '×'){
-          total = total * inputNumber;
-        } else if (operator === '÷'){
-          total = total / inputNumber;
-        }
-      }
-      operator = calculatorButtonValue;
-      inputNumber = '0';
-      this.setState({
-        calculatorDisplay : total.textContent,
-      });
-    } else {
-      if (operator === '='){
-        total = 0;
-        operator = '+'
-      }
-      if (inputNumber === '0'){
-        inputNumber = calculatorButtonValue;
-      } else {
-        inputNumber = inputNumber + calculatorButtonValue;
-      }
-      this.setState({
-        calculatorDisplay : inputNumber.textContent,
-      });
-    }
-    previousButton = calculatorButtonValue;
-  }
-
-  render(){
-    return(
-      <Base
-        //total={this.calculatorDisplay}
-        //onClick={i => this.handleClick(i)}
-      />
-    );
-  }
-}
-*/
 ReactDOM.render(
   <Base />,
   document.getElementById('root')
